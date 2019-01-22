@@ -1,6 +1,11 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 
+const getUser = require('./internal/getUser')
+const verification = require('./internal/verification')
+const signToken = require('./internal/signToken')
+const url = require('url')
+
 const app = express()
 
 // http://localhost:3001/login?redirect_url=http://localhost:3000/info
@@ -31,6 +36,20 @@ app
                 </form>
             </html>
         `)
+
+    })
+    .post('/login', (req, res) => {
+
+        const { email, password, redirect_url } = req.body
+
+        const user = getUser(email)
+
+        if (!user || !verification(user, password)) return res.send('invalid user or password')
+
+        res.redirect(url.format({
+            pathname: 'http://localhost:3000/auth/sso',
+            query: { token: signToken(user), redirect_url }
+        }))
 
     })
 
