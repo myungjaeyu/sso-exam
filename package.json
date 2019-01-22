@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/myungjaeyu/sso-exam/issues"
   },
-  "homepage": "https://github.com/myungjaeyu/sso-exam#readme"
+  "homepage": "https://github.com/myungjaeyu/sso-exam#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
 }
