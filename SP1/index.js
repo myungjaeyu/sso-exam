@@ -18,7 +18,7 @@ app
 
         const { sdp1_sso_token } = req.cookies
 
-        if (!sdp1_sso_token) return res.redirect(`http://localhost:3001/login?redirect_url=http://localhost:${ PORT }${ req.url }`)
+        if (!sdp1_sso_token) return res.redirect(`http://localhost:11666/login?redirect_url=http://localhost:${ PORT }${ req.url }`)
 
         const { id, email, first_name, last_name } = verificationToken(sdp1_sso_token)
 

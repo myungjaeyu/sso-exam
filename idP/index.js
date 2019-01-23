@@ -9,7 +9,9 @@ const formatURL = require('./internal/formatURL')
 
 const app = express()
 
-// http://localhost:3001/login?redirect_url=http://localhost:3000/info
+const PORT = process.env.PORT || 11666
+
+// http://localhost:11666/login?redirect_url=http://localhost:3000/info
 
 app
     .use(cookieParser())
@@ -59,8 +61,6 @@ app
 
     })
 
-
-const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`🚀  Started on port ${ PORT }`)
 })
