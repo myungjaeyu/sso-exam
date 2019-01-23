@@ -4,6 +4,10 @@ const cookieParser = require('cookie-parser')
 
 const app = express()
 
+const verificationToken = require('./internal/verificationToken')
+
+const PORT = process.env.SP_PORT || 3000
+
 app
     .use(cookieParser())
     .use(bodyParser.json())
@@ -12,24 +16,31 @@ app
  
         // http://localhost:3000/info
 
-        const { sso_token } = req.cookies
+        const { sdp1_sso_token } = req.cookies
 
-        if (!sso_token) return res.redirect(`http://localhost:3001/login?redirect_url=http://localhost:3000${ req.url }`)
+        if (!sdp1_sso_token) return res.redirect(`http://localhost:3001/login?redirect_url=http://localhost:${ PORT }${ req.url }`)
 
-        res.send(`info user ${ sso_token }`)
+        const { id, email, first_name, last_name } = verificationToken(sdp1_sso_token)
+
+        res.send(`
+        <html>
+            <h1>SP1 User Info ${ first_name } ${ last_name }</h1>
+        </html>
+        `)
 
     })
     .get('/auth/sso', (req, res) => {
 
-        // http://localhost:3000/auth/sso?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiQGV4YW1wbGUuY29tIiwiZmlyc3RfbmFtZSI6IktpbSIsImxhc3RfbmFtZSI6Ik15dW5namFlIiwibmlja25hbWUiOiJBIiwiY2FzaCI6MTUwMDAsImlhdCI6MTU0ODE5MjM3NH0.xLZLi9s9fJwY-npsy8OOwU6zcJCcrLvEm8M2sS1-Iko&redirect_url=http%3A%2F%2Flocalhost%3A3000%2Finfo
+        // http://localhost:3000/auth/sso?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJiQGV4YW1wbGUuY29tIiwiZmlyc3RfbmFtZSI6Ik15dW5namFlIiwibGFzdF9uYW1lIjoiS2ltIiwiaWF0IjoxNTQ4MjEwNjI5fQ.c36dBUwF7VQwWZ8QToom12zNlwXyv8EhwJmnZHUox4s&redirect_url=http%3A%2F%2Flocalhost%3A3000%2Finfo
 
         const { token, redirect_url } = req.query
 
-        res.json({ token, redirect_url })
+        verificationToken(token) && res
+                                    .cookie('sdp1_sso_token', token, { httpOnly: true })
+                                    .redirect(redirect_url)
 
     })
 
-const PORT = process.env.SP_PORT || 3000
 app.listen(PORT, () => {
     console.log(`🚀  Started on port ${ PORT }`)
 })
