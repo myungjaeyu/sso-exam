@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:idp": "node idP/index",
+    "start:sp1": "node SP1/index",
+    "start:sp2": "node SP2/index",
+    "start:sp3": "node SP3/index",
+    "start" : "concurrently \"npm run start:idp\" \"npm run start:sp1\" \"npm run start:sp2\" \"npm run start:sp3\""
   },
   "repository": {
     "type": "git",
